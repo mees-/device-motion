@@ -10,6 +10,8 @@ class App extends Component {
     props.store.subscribe(() => {
       this.setState(props.store.getState())
     })
+
+    this.reset = this.reset.bind(this)
   }
   render() {
     return (
@@ -32,9 +34,15 @@ class App extends Component {
         </div>
 
         <h1> { this.state.diff > 15 ? 'MOVING' : 'STILL' }</h1>
-        <p>{ Math.floor(this.state.diff) }</p>
+        <p>diff: { Math.floor(this.state.diff) }</p>
+        <button onClick={this.reset}>reset</button>
       </div>
     )
+  }
+  reset() {
+    this.props.store.dispatch({
+      type: null
+    })
   }
 }
 
