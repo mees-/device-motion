@@ -1,45 +1,101 @@
 export default function reducer(oldState, action) {
   switch (action.type) {
-    case 'SET_ACC':
-      return { ...oldState, acc: action.acc }
-    case 'SET_TOTAL':
-      return { ...oldState, total: action.total }
-    case 'ADD_ACC':
+    case 'ADD_ACCELERATION':
       return {
         ...oldState,
-        acc: {
-          x: oldState.acc.x + action.acc.x,
-          y: oldState.acc.y + action.acc.y,
-          z: oldState.acc.z + action.acc.z
+        acceleration: {
+          x: oldState.acceleration.x + action.acceleration.x,
+          y: oldState.acceleration.y + action.acceleration.y,
+          z: oldState.acceleration.z + action.acceleration.z
+        },
+        diff: {
+          ...oldState.diff,
+          acceleration: {
+            ...oldState.diff.acceleration,
+            x: Math.abs(oldState.acceleration.x - (oldState.acceleration.x + action.acceleration.x)),
+            y: Math.abs(oldState.acceleration.y - (oldState.acceleration.y + action.acceleration.y)),
+            z: Math.abs(oldState.acceleration.z - (oldState.acceleration.z + action.acceleration.z)),
+            total: Math.abs(oldState.acceleration.x - (oldState.acceleration.x + action.acceleration.x)) +
+              Math.abs(oldState.acceleration.y - (oldState.acceleration.y + action.acceleration.y)) +
+              Math.abs(oldState.acceleration.z - (oldState.acceleration.z + action.acceleration.z))
+          },
+          total: oldState.diff.rotationRate.total +
+            Math.abs(oldState.acceleration.x - (oldState.acceleration.x + action.acceleration.x)) +
+            Math.abs(oldState.acceleration.y - (oldState.acceleration.y + action.acceleration.y)) +
+            Math.abs(oldState.acceleration.z - (oldState.acceleration.z + action.acceleration.z))
+        },
+        lastDiffs: [
+          oldState.diff.rotationRate.total +
+            Math.abs(oldState.acceleration.x - (oldState.acceleration.x + action.acceleration.x)) +
+            Math.abs(oldState.acceleration.y - (oldState.acceleration.y + action.acceleration.y)) +
+            Math.abs(oldState.acceleration.z - (oldState.acceleration.z + action.acceleration.z)),
+          ...oldState.lastDiffs.slice(0, 200)
+        ]
+      }
+    case 'ADD_ROTATIONRATE':
+      return {
+        ...oldState,
+        rotationRate: {
+          alpha: oldState.rotationRate.alpha + action.rotationRate.alpha,
+          beta: oldState.rotationRate.beta + action.rotationRate.beta,
+          gamma: oldState.rotationRate.gamma + action.rotationRate.gamma
+        },
+        diff: {
+          ...oldState.diff,
+          rotationRate: {
+            alpha: Math.abs(oldState.rotationRate.alpha - (oldState.rotationRate.alpha + action.rotationRate.alpha)),
+            beta: Math.abs(oldState.rotationRate.beta - (oldState.rotationRate.beta + action.rotationRate.beta)),
+            gamma: Math.abs(oldState.rotationRate.gamma - (oldState.rotationRate.gamma + action.rotationRate.gamma)),
+            total: Math.abs(oldState.rotationRate.alpha - (oldState.rotationRate.alpha + action.rotationRate.alpha)) +
+              Math.abs(oldState.rotationRate.beta - (oldState.rotationRate.beta + action.rotationRate.beta)) +
+              Math.abs(oldState.rotationRate.alpha - (oldState.rotationRate.alpha + action.rotationRate.alpha))
+          },
+          total: oldState.diff.acceleration.total +
+            Math.abs(oldState.rotationRate.alpha - (oldState.rotationRate.alpha + action.rotationRate.alpha)) +
+            Math.abs(oldState.rotationRate.beta - (oldState.rotationRate.beta + action.rotationRate.beta)) +
+            Math.abs(oldState.rotationRate.alpha - (oldState.rotationRate.alpha + action.rotationRate.alpha))
         }
       }
-    case 'ADD_TOTAL':
+    case 'CHANGE_SENSITIVITY':
       return {
         ...oldState,
-        total: {
-          alpha: oldState.total.alpha + action.total.alpha,
-          beta: oldState.total.beta + action.total.beta,
-          gamma: oldState.total.gamma + action.total.gamma
-        }
+        sensitivity: action.value
       }
-    case 'SET_DIFF':
+    case 'ADD_INTERVAL':
       return {
         ...oldState,
-        diff: action.diff
+        interval: [action.interval, ...oldState.interval.slice(0, 100)]
       }
     default:
       return {
-        acc: {
+        sensitivity: 20,
+        lastDiffs: [],
+        interval: [],
+        acceleration: {
           x: 0,
           y: 0,
           z: 0
         },
-        total: {
+        rotationRate: {
           alpha: 0,
           beta: 0,
           gamma: 0
         },
-        diff: 0
+        diff: {
+          acceleration: {
+            x: 0,
+            y: 0,
+            z: 0,
+            total: 0
+          },
+          rotationRate: {
+            alpha: 0,
+            beta: 0,
+            gamma: 0,
+            total: 0
+          },
+          total: 0
+        }
       }
   }
 }
