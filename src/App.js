@@ -23,7 +23,7 @@ class App extends Component {
     return (
       <div className='App'>
         <div>
-          <h3>acc</h3>
+          <h3>acceleration</h3>
           <ul>
             <li> x: { Math.floor(this.state.acceleration.x) }</li>
             <li> y: { Math.floor(this.state.acceleration.y) }</li>
@@ -31,7 +31,7 @@ class App extends Component {
           </ul>
         </div>
         <div>
-          <h3>total</h3>
+          <h3>rotationRate</h3>
           <ul>
             <li>alpha: { Math.floor(this.state.rotationRate.alpha) }</li>
             <li>beta: { Math.floor(this.state.rotationRate.beta) }</li>
